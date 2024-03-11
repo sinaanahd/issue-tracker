@@ -3,6 +3,7 @@ import prisma from '@/prisma/client'
 import { notFound } from 'next/navigation'
 import IssueStatusBadge from '@/app/components/IssueStatusBadge'
 import styles from './issueDetails.module.css'
+import ReactMarkdown from 'react-markdown'
 
 interface Props {
   params: { id: string }
@@ -22,7 +23,9 @@ const IssueDetailsPage = async ({ params }: Props) => {
         <IssueStatusBadge status={issue.status} />
         <p className={styles.dateWrapper}>{issue.createdAT.toDateString()}</p>
       </div>
-      <p>{issue.description}</p>
+      <ReactMarkdown className={styles.mainTexts}>
+        {issue.description}
+      </ReactMarkdown>
     </div>
   )
 }
