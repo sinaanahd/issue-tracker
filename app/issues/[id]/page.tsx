@@ -4,7 +4,7 @@ import { notFound } from 'next/navigation'
 import IssueStatusBadge from '@/app/components/IssueStatusBadge'
 import styles from './issueDetails.module.css'
 import ReactMarkdown from 'react-markdown'
-
+import delay from 'delay'
 interface Props {
   params: { id: string }
 }
@@ -16,6 +16,7 @@ const IssueDetailsPage = async ({ params }: Props) => {
   if (!issue) {
     notFound()
   }
+  // await delay(2000)
   return (
     <div className={styles.pageContainer}>
       <h1 className={styles.title}>{issue.title}</h1>

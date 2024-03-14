@@ -11,10 +11,11 @@ import { createIssueSchema } from '@/app/validationSchemas'
 import { z } from 'zod'
 import ErrorMessage from '@/app/components/ErrorMessage'
 import Spinner from '@/app/components/Spinner'
+import delay from 'delay'
 
 type IssueForm = z.infer<typeof createIssueSchema>
 
-const NewIssuePage = () => {
+const NewIssuePage = async () => {
   const [error, set_error] = useState('')
   const [is_submitting, set_is_submitting] = useState(false)
   const router = useRouter()
@@ -36,6 +37,7 @@ const NewIssuePage = () => {
       set_error('An unexpected error occured.')
     }
   }
+  await delay(200)
   return (
     <div className="max-w-xl space-y-3">
       {error && (
