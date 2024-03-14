@@ -38,8 +38,10 @@ const IssueForm = async ({ issue }: Props) => {
   const send_post_data = async (data: object) => {
     try {
       set_is_submitting(true)
-      await axios.post('/api/issues', data)
+      if (issue) await axios.patch(`/api/issues/${issue.id}`, data)
+      else await axios.post('/api/issues', data)
       router.push('/issues')
+      router.refresh()
     } catch (error) {
       set_is_submitting(false)
       set_error('An unexpected error occured.')
@@ -79,7 +81,8 @@ const IssueForm = async ({ issue }: Props) => {
         <ErrorMessage>{errors.description?.message}</ErrorMessage>
 
         <Button disabled={is_submitting}>
-          Submit New Issue {is_submitting && <Spinner />}
+          {issue ? 'Edit Issue' : 'Submit New Issue'}
+          {is_submitting && <Spinner />}
         </Button>
       </form>
     </div>
