@@ -1,8 +1,25 @@
 'use client'
+import Spinner from '@/app/components/Spinner'
 import { AlertDialog, Button, Flex } from '@radix-ui/themes'
+import axios from 'axios'
+import { useRouter } from 'next/navigation'
+import { useState } from 'react'
 import { FaRegTrashAlt } from 'react-icons/fa'
 
 const DeleteIssueButton = ({ issueId }: { issueId: Number }) => {
+  const [is_submitting, set_is_submitting] = useState(false)
+  const router = useRouter()
+  const handle_delete_issue = async () => {
+    try {
+      set_is_submitting(true)
+      await axios.delete(`/api/issues/${issueId}`)
+      router.push('/issues')
+      router.refresh()
+    } catch (error) {
+      set_is_submitting(false)
+      console.log('An unexpected error occured.')
+    }
+  }
   return (
     <AlertDialog.Root>
       <AlertDialog.Trigger>
@@ -23,7 +40,14 @@ const DeleteIssueButton = ({ issueId }: { issueId: Number }) => {
             </Button>
           </AlertDialog.Cancel>
           <AlertDialog.Action>
-            <Button color="red">Delete issue</Button>
+            <Button
+              color="red"
+              onClick={() => {
+                handle_delete_issue()
+              }}
+            >
+              Delete issue {is_submitting && <Spinner />}
+            </Button>
           </AlertDialog.Action>
         </Flex>
       </AlertDialog.Content>
