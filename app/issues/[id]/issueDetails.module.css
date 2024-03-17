@@ -47,6 +47,14 @@
     gap: 5px;
     width: 100px;
 }
+.secondCol{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: flex-start;
+    gap: 10px;
+}
+
 @media (max-width : 991px) {
     .pageContainer{
         flex-direction: column;
@@ -54,5 +62,8 @@
     }
     .issueOldDatas{
         width: 100%;
+    }
+    .secondCol{
+        align-items: center;
     }
 }
