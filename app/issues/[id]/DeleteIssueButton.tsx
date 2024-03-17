@@ -7,17 +7,17 @@ import { useState } from 'react'
 import { FaRegTrashAlt } from 'react-icons/fa'
 
 const DeleteIssueButton = ({ issueId }: { issueId: Number }) => {
-  const [is_submitting, set_is_submitting] = useState(false)
+  const [is_deleting, set_is_deleting] = useState(false)
   const [error, set_error] = useState(false)
   const router = useRouter()
   const handle_delete_issue = async () => {
     try {
-      set_is_submitting(true)
+      set_is_deleting(true)
       await axios.delete(`/api/issues/${issueId}`)
       router.push('/issues')
       router.refresh()
     } catch (error) {
-      set_is_submitting(false)
+      set_is_deleting(false)
       set_error(true)
     }
   }
@@ -25,9 +25,9 @@ const DeleteIssueButton = ({ issueId }: { issueId: Number }) => {
     <>
       <AlertDialog.Root>
         <AlertDialog.Trigger>
-          <Button color="red">
+          <Button color="red" disabled={is_deleting}>
             Delete Issue
-            <FaRegTrashAlt />
+            {is_deleting ? <Spinner /> : <FaRegTrashAlt />}
           </Button>
         </AlertDialog.Trigger>
         <AlertDialog.Content>
@@ -48,7 +48,7 @@ const DeleteIssueButton = ({ issueId }: { issueId: Number }) => {
                   handle_delete_issue()
                 }}
               >
-                Delete issue {is_submitting && <Spinner />}
+                Delete issue
               </Button>
             </AlertDialog.Action>
           </Flex>
