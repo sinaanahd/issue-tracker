@@ -4,6 +4,7 @@ import { Select } from '@radix-ui/themes'
 import { useQuery } from '@tanstack/react-query'
 import axios from 'axios'
 import React, { useEffect, useState } from 'react'
+import toast, { Toaster } from 'react-hot-toast'
 
 const AssigneeSelect = ({ issue }: { issue: Issue }) => {
   const {
@@ -30,12 +31,17 @@ const AssigneeSelect = ({ issue }: { issue: Issue }) => {
 
   const assign_user = (userId: string) => {
     const numerical_id = parseInt(userId)
-    axios.patch(`/api/issues/${issue.id}`, {
-      assignedToUserId: numerical_id ? numerical_id : null,
-    })
+
+    axios
+      .patch(`/api/issues/${issue.id}`, {
+        assignedToUserId: numerical_id ? numerical_id : null,
+      })
+      .catch(() => {
+        toast.error('Changes could not be saved')
+      })
   }
   return (
-    <div>
+    <>
       <Select.Root
         defaultValue={
           issue.assignedToUserId ? issue.assignedToUserId + '' : 0 + ''
@@ -57,7 +63,8 @@ const AssigneeSelect = ({ issue }: { issue: Issue }) => {
           </Select.Group>
         </Select.Content>
       </Select.Root>
-    </div>
+      <Toaster></Toaster>
+    </>
   )
 }
 
