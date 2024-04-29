@@ -22,7 +22,7 @@ const IssueDetailsPage = async ({ params }: Props) => {
         <IssueDetails issue={issue} />
       </div>
       <div className={styles.secondCol}>
-        <AssigneeSelect />
+        <AssigneeSelect issue={issue} />
         <EditIssueButton id={issue.id} />
         <DeleteIssueButton issueId={issue.id} />
       </div>
