@@ -5,11 +5,13 @@ import IssueStatusBadge from '../components/IssueStatusBadge'
 import IssueActions from './IssueActions'
 import Link from 'next/link'
 import { Issue, Status } from '@prisma/client'
+import Pagination from '../components/Pagination'
 
 interface Props {
   searchParams: {
     status: Status
     orderBy: keyof Issue
+    page: string
   }
 }
 
@@ -35,15 +37,26 @@ const IssuesPage = async ({ searchParams }: Props) => {
   const status = statuses.includes(searchParams.status)
     ? searchParams.status
     : undefined
+
+  const where = { status }
   const orderBy = columns.map((c) => c.value).includes(searchParams.orderBy)
     ? { [searchParams.orderBy]: 'asc' }
     : undefined
+
+  const page = parseInt(searchParams.page) || 1
+  const pageSize = 10
+
   const issues = await prisma.issue.findMany({
-    where: {
-      status,
-    },
+    where,
     orderBy,
+    skip: (page - 1) * pageSize,
+    take: pageSize,
   })
+
+  const issueCount = await prisma.issue.count({
+    where,
+  })
+
   return (
     <div>
       <IssueActions />
@@ -65,14 +78,6 @@ const IssuesPage = async ({ searchParams }: Props) => {
                 </Link>
               </Table.ColumnHeaderCell>
             ))}
-            {/*
-            <Table.ColumnHeaderCell>Issue</Table.ColumnHeaderCell>
-             <Table.ColumnHeaderCell className="hidden md:table-cell">
-              Status
-            </Table.ColumnHeaderCell>
-            <Table.ColumnHeaderCell className="hidden md:table-cell">
-              Created At
-            </Table.ColumnHeaderCell> */}
           </Table.Row>
         </Table.Header>
         <Table.Body>
@@ -99,6 +104,11 @@ const IssuesPage = async ({ searchParams }: Props) => {
           ))}
         </Table.Body>
       </Table.Root>
+      <Pagination
+        itemCount={issueCount}
+        pageSize={pageSize}
+        currentPage={page}
+      />
     </div>
   )
 }
